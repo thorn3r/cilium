@@ -366,6 +366,7 @@ generate-k8s-api: ## Generate Cilium k8s API client, deepcopy and deepequal Go s
 	maps:encrypt\
 	maps:eppolicymap\
 	maps:eventsmap\
+	maps:fqdngcmap\
 	maps:fragmap\
 	maps:ipcache\
 	maps:ipmasq\
