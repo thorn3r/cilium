@@ -621,7 +621,7 @@ enum metric_dir {
 #define MARK_MAGIC_HOST			0x0C00
 #define MARK_MAGIC_DECRYPT		0x0D00
 #define MARK_MAGIC_ENCRYPT		0x0E00
-#define MARK_MAGIC_IDENTITY		0x0F00 /* mark carries identity */
+#define MARK_MAGIC_IDENTITY		0x1E00 /* mark carries identity */
 #define MARK_MAGIC_TO_PROXY		0x0200
 #define MARK_MAGIC_SNAT_DONE		0x0300
 

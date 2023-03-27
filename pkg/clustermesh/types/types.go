@@ -12,7 +12,7 @@ const (
 	ClusterIDMin = 0
 
 	// ClusterIDMax is the maximum value of the cluster ID
-	ClusterIDMax = 255
+	ClusterIDMax = 511
 )
 
 func ValidateClusterID(clusterID uint32) error {
