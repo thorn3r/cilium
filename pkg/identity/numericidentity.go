@@ -19,7 +19,7 @@ import (
 const (
 	// ClusterIDShift specifies the number of bits the cluster ID will be
 	// shifted
-	ClusterIDShift = 16
+	ClusterIDShift = 15
 
 	// LocalIdentityFlag is the bit in the numeric identity that identifies
 	// a numeric identity to have local scope
@@ -523,7 +523,7 @@ func (id NumericIdentity) IsReservedIdentity() bool {
 
 // ClusterID returns the cluster ID associated with the identity
 func (id NumericIdentity) ClusterID() uint32 {
-	return (uint32(id) >> 16) & 0xFF
+	return (uint32(id) >> 15) & 0x1FF
 }
 
 // GetAllReservedIdentities returns a list of all reserved numeric identities

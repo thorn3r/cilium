@@ -260,6 +260,7 @@ func (m *CachingIdentityAllocator) LookupIdentityByID(ctx context.Context, id id
 
 	allocatorKey, err := m.IdentityAllocator.GetByIDIncludeRemoteCaches(ctx, idpool.ID(id))
 	if err != nil {
+		log.Warningf("get by ID error: %v", err)
 		return nil
 	}
 
