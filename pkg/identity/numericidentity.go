@@ -10,6 +10,8 @@ import (
 	"sort"
 	"strconv"
 
+	"github.com/cilium/cilium/pkg/clustermesh/types"
+	cmtypes "github.com/cilium/cilium/pkg/clustermesh/types"
 	api "github.com/cilium/cilium/pkg/k8s/apis/cilium.io"
 	"github.com/cilium/cilium/pkg/labels"
 	"github.com/cilium/cilium/pkg/lock"
@@ -17,10 +19,6 @@ import (
 )
 
 const (
-	// ClusterIDShift specifies the number of bits the cluster ID will be
-	// shifted
-	ClusterIDShift = 15
-
 	// LocalIdentityFlag is the bit in the numeric identity that identifies
 	// a numeric identity to have local scope
 	LocalIdentityFlag = NumericIdentity(1 << 24)
@@ -71,7 +69,7 @@ var (
 
 	// MaximumAllocationIdentity is the maximum numeric identity handed out
 	// by the identity allocator
-	MaximumAllocationIdentity = NumericIdentity((1<<ClusterIDShift)*(option.Config.ClusterID+1) - 1)
+	MaximumAllocationIdentity = NumericIdentity((1<<cmtypes.ClusterIDShift)*(option.Config.ClusterID+1) - 1)
 )
 
 const (
@@ -362,10 +360,10 @@ func InitMinMaxIdentityAllocation(c Configuration) {
 	if c.LocalClusterID() > 0 {
 		// For ClusterID > 0, the identity range just starts from cluster shift,
 		// no well-known-identities need to be reserved from the range.
-		MinimalAllocationIdentity = NumericIdentity((1 << ClusterIDShift) * c.LocalClusterID())
+		MinimalAllocationIdentity = NumericIdentity((1 << cmtypes.ClusterIDShift) * c.LocalClusterID())
 		// The maximum identity also needs to be recalculated as ClusterID
 		// may be overwritten by runtime parameters.
-		MaximumAllocationIdentity = NumericIdentity((1<<ClusterIDShift)*(c.LocalClusterID()+1) - 1)
+		MaximumAllocationIdentity = NumericIdentity((1<<cmtypes.ClusterIDShift)*(c.LocalClusterID()+1) - 1)
 	}
 }
 
@@ -523,7 +521,7 @@ func (id NumericIdentity) IsReservedIdentity() bool {
 
 // ClusterID returns the cluster ID associated with the identity
 func (id NumericIdentity) ClusterID() uint32 {
-	return (uint32(id) >> 15) & 0x1FF
+	return (uint32(id) >> uint32(types.ClusterIDShift)) & types.ClusterIDMax
 }
 
 // GetAllReservedIdentities returns a list of all reserved numeric identities

@@ -25,9 +25,10 @@ import (
 var PerClusterCTMaps PerClusterCTMapper
 
 const (
-	perClusterCTMapMaxEntries  = cmtypes.ClusterIDMax + 1
 	PerClusterCTOuterMapPrefix = "cilium_per_cluster_ct_"
 )
+
+var perClusterCTMapMaxEntries = cmtypes.ClusterIDMax + 1
 
 // An interface to interact with all per-cluster CT maps
 type PerClusterCTMapper interface {
@@ -496,7 +497,7 @@ func newPerClusterCTMap(name string, m mapType) (*PerClusterCTMap, error) {
 		int(unsafe.Sizeof(PerClusterCTMapKey{})),
 		&PerClusterCTMapVal{},
 		int(unsafe.Sizeof(PerClusterCTMapVal{})),
-		perClusterCTMapMaxEntries,
+		int(perClusterCTMapMaxEntries),
 		0,
 		uint32(fd),
 		bpf.ConvertKeyValue,

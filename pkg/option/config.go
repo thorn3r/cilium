@@ -1133,6 +1133,10 @@ const (
 
 	// EnableK8sNetworkPolicy enables support for K8s NetworkPolicy.
 	EnableK8sNetworkPolicy = "enable-k8s-networkpolicy"
+
+	// EnableExtendedClustermesh increases the maximum number of supported clusters in a Clustermesh from 255 to 511.
+	// Enabling this feature decreases the maximum number of identites per cluster from 65,536 to 32,768.
+	EnableExtendedClustermesh = "enable-extended-clustermesh"
 )
 
 // Default string arguments
@@ -2314,6 +2318,10 @@ type DaemonConfig struct {
 
 	// EnableK8sNetworkPolicy enables support for K8s NetworkPolicy.
 	EnableK8sNetworkPolicy bool
+
+	// EnableExtendedClustermesh increases the maximum number of supported clusters in a Clustermesh from 255 to 511.
+	// Enabling this feature decreases the maximum number of identites per cluster from 65,536 to 32,768.
+	EnableExtendedClustermesh bool
 }
 
 var (
@@ -2359,10 +2367,11 @@ var (
 		K8sEnableLeasesFallbackDiscovery: defaults.K8sEnableLeasesFallbackDiscovery,
 		APIRateLimit:                     make(map[string]string),
 
-		ExternalClusterIP:      defaults.ExternalClusterIP,
-		EnableVTEP:             defaults.EnableVTEP,
-		EnableBGPControlPlane:  defaults.EnableBGPControlPlane,
-		EnableK8sNetworkPolicy: defaults.EnableK8sNetworkPolicy,
+		ExternalClusterIP:         defaults.ExternalClusterIP,
+		EnableVTEP:                defaults.EnableVTEP,
+		EnableBGPControlPlane:     defaults.EnableBGPControlPlane,
+		EnableK8sNetworkPolicy:    defaults.EnableK8sNetworkPolicy,
+		EnableExtendedClustermesh: defaults.EnableExtendedClustermesh,
 	}
 )
 
@@ -3408,6 +3417,9 @@ func (c *DaemonConfig) Populate(vp *viper.Viper) {
 
 	// To support K8s NetworkPolicy
 	c.EnableK8sNetworkPolicy = vp.GetBool(EnableK8sNetworkPolicy)
+
+	// To extend clustermesh support to 511 clusters
+	c.EnableExtendedClustermesh = vp.GetBool(EnableExtendedClustermesh)
 }
 
 func (c *DaemonConfig) additionalMetrics() []string {

@@ -23,8 +23,9 @@ const (
 	mapNamePerClusterSnat6Global = "cilium_per_cluster_snat_v6_external"
 	innerMapNamePrefix4          = MapNameSnat4Global + "_"
 	innerMapNamePrefix6          = MapNameSnat6Global + "_"
-	perClusterNATMapMaxEntries   = cmtypes.ClusterIDMax + 1
 )
+
+var perClusterNATMapMaxEntries = cmtypes.ClusterIDMax + 1
 
 // Global interface to interact with IPv4 and v6 NAT maps. We can choose the
 // implementation of this at startup time by choosing InitPerClusterNATMaps
@@ -116,7 +117,7 @@ func newPerClusterNATMap(name string, v4 bool, innerMapEntries int) (*PerCluster
 		int(unsafe.Sizeof(PerClusterNATMapKey{})),
 		&PerClusterNATMapVal{},
 		int(unsafe.Sizeof(PerClusterNATMapVal{})),
-		perClusterNATMapMaxEntries,
+		int(perClusterNATMapMaxEntries),
 		0,
 		uint32(fd),
 		bpf.ConvertKeyValue,

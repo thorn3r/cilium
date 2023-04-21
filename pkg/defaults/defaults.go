@@ -521,6 +521,10 @@ const (
 
 	// EnableK8sNetworkPolicy enables support for K8s NetworkPolicy.
 	EnableK8sNetworkPolicy = true
+
+	// EnableExtendedClustermesh increases the maximum number of supported clusters in a Clustermesh from 255 to 511.
+	// Enabling this feature decreases the maximum number of identites per cluster from 65,536 to 32,768.
+	EnableExtendedClustermesh = false
 )
 
 var (

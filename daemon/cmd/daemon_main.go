@@ -31,6 +31,7 @@ import (
 	bgpv1 "github.com/cilium/cilium/pkg/bgpv1/agent"
 	"github.com/cilium/cilium/pkg/bpf"
 	"github.com/cilium/cilium/pkg/cgroups"
+	cmtypes "github.com/cilium/cilium/pkg/clustermesh/types"
 	"github.com/cilium/cilium/pkg/common"
 	"github.com/cilium/cilium/pkg/components"
 	"github.com/cilium/cilium/pkg/controller"
@@ -1076,6 +1077,9 @@ func initializeFlags() {
 	flags.MarkHidden(option.EnableK8sNetworkPolicy)
 	option.BindEnv(Vp, option.EnableK8sNetworkPolicy)
 
+	flags.Bool(option.EnableExtendedClustermesh, defaults.EnableExtendedClustermesh, "Enable support for extended Clustermesh")
+	option.BindEnv(Vp, option.EnableExtendedClustermesh)
+
 	if err := Vp.BindPFlags(flags); err != nil {
 		log.Fatalf("BindPFlags failed: %s", err)
 	}
@@ -1503,6 +1507,11 @@ func initEnv() {
 				option.BypassIPAvailabilityUponRestore,
 			)
 		}
+	}
+
+	if option.Config.EnableExtendedClustermesh {
+		cmtypes.EnableExtendedClustermesh()
+		log.Infof("Enabling extended Clustermesh with %d maximum clusters", cmtypes.ClusterIDMax)
 	}
 }
 

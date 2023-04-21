@@ -12,8 +12,21 @@ const (
 	ClusterIDMin = 0
 
 	// ClusterIDMax is the maximum value of the cluster ID
-	ClusterIDMax = 511
+	ClusterIDMaxDefault = 255
+
+	ClusterIDMaxExtended = 511
+
+	ClusterIDShiftDefault  = 16
+	ClusterIDShiftExtended = 15
 )
+
+var ClusterIDMax uint32 = ClusterIDMaxDefault
+var ClusterIDShift int = ClusterIDShiftDefault
+
+func EnableExtendedClustermesh() {
+	ClusterIDMax = ClusterIDMaxExtended
+	ClusterIDShift = ClusterIDShiftExtended
+}
 
 func ValidateClusterID(clusterID uint32) error {
 	if clusterID == ClusterIDMin {
