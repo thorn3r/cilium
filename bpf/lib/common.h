@@ -567,6 +567,24 @@ enum {
 #define NAT_PUNT_TO_STACK	DROP_NAT_NOT_NEEDED
 #define NAT_46X64_RECIRC	100
 
+/* Extended clustermesh uses an extra bit from the mark for cluster ID to allow
+ * for larger clustermesh. The bit is taken from identity, thus reducing the
+ * total number of available identites.
+ */
+#ifdef ENABLE_EXTENDED_CLUSTERMESH
+#define MARK_MAGIC_IDENTITY		0x1E00 /* mark carries identity */
+#define CLUSTER_ID_MAX 0x1FF
+#define IDENTITY_MAX 0x7FFF
+#define CLUSTER_ID_SHIFT 15
+#define IDENTITY_SHIFT 17
+#else
+#define CLUSTER_ID_MAX 0xFF
+#define IDENTITY_MAX 0xFFFF
+#define CLUSTER_ID_SHIFT 16
+#define IDENTITY_SHIFT 16
+#endif
+
+
 /* Cilium metrics reasons for forwarding packets and other stats.
  * If reason is larger than below then this is a drop reason and
  * value corresponds to -(DROP_*), see above.
@@ -621,7 +639,9 @@ enum metric_dir {
 #define MARK_MAGIC_HOST			0x0C00
 #define MARK_MAGIC_DECRYPT		0x0D00
 #define MARK_MAGIC_ENCRYPT		0x0E00
+#ifndef MARK_MAGIC_IDENTITY		/* check to ensure its not already been defined with extended clustermesh */
 #define MARK_MAGIC_IDENTITY		0x1E00 /* mark carries identity */
+#endif
 #define MARK_MAGIC_TO_PROXY		0x0200
 #define MARK_MAGIC_SNAT_DONE		0x0300
 
@@ -648,7 +668,7 @@ enum metric_dir {
 
 /* Shouldn't interfere with MARK_MAGIC_TO_PROXY. Lower 8bits carries cluster_id */
 #define MARK_MAGIC_CLUSTER_ID		MARK_MAGIC_TO_PROXY
-#define MARK_MAGIC_CLUSTER_ID_MASK	0x00FF
+#define MARK_MAGIC_CLUSTER_ID_MASK	CLUSTER_ID_MAX
 
 /* IPv4 option used to carry service addr and port for DSR.
  *

@@ -25,7 +25,7 @@ bpf_clear_meta(struct __sk_buff *ctx)
 static __always_inline __maybe_unused int
 get_identity(const struct __sk_buff *ctx)
 {
-	return ((ctx->mark & 0x1FF) << 15) | ctx->mark >> 17;
+	return ((ctx->mark & CLUSTER_ID_MAX) << CLUSTER_ID_SHIFT) | ctx->mark >> IDENTITY_SHIFT;
 }
 
 /**
@@ -44,7 +44,8 @@ static __always_inline __maybe_unused void
 set_identity_mark(struct __sk_buff *ctx, __u32 identity)
 {
 	ctx->mark = ctx->mark & MARK_MAGIC_KEY_MASK;
-	ctx->mark |= ((identity & 0x7FFF) << 17) | ((identity & 0xFF8000) >> 15);
+
+	ctx->mark |= ((identity & IDENTITY_MAX) << IDENTITY_SHIFT) | ((identity & (CLUSTER_ID_MAX << CLUSTER_ID_SHIFT)) >> 16);
 }
 
 static __always_inline __maybe_unused void
