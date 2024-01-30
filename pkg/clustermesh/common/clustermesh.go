@@ -34,7 +34,7 @@ func (def Config) Flags(flags *pflag.FlagSet) {
 }
 
 type StatusFunc func() *models.RemoteCluster
-type RemoteClusterCreatorFunc func(name string, status StatusFunc) RemoteCluster
+type RemoteClusterCreatorFunc func(name string, status StatusFunc, synced Synced) RemoteCluster
 
 // Configuration is the configuration that must be provided to
 // NewClusterMesh()
@@ -127,9 +127,10 @@ func (cm *ClusterMesh) newRemoteCluster(name, path string) *remoteCluster {
 		metricLastFailureTimestamp: cm.conf.Metrics.LastFailureTimestamp.WithLabelValues(cm.conf.ClusterInfo.Name, cm.conf.NodeName, name),
 		metricReadinessStatus:      cm.conf.Metrics.ReadinessStatus.WithLabelValues(cm.conf.ClusterInfo.Name, cm.conf.NodeName, name),
 		metricTotalFailures:        cm.conf.Metrics.TotalFailures.WithLabelValues(cm.conf.ClusterInfo.Name, cm.conf.NodeName, name),
+		synced:                     NewSynced(),
 	}
 
-	rc.RemoteCluster = cm.conf.NewRemoteCluster(name, rc.status)
+	rc.RemoteCluster = cm.conf.NewRemoteCluster(name, rc.status, rc.synced)
 	return rc
 }
 

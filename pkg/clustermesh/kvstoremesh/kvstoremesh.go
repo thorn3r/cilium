@@ -77,7 +77,7 @@ func (km *KVStoreMesh) Stop(hive.HookContext) error {
 	return nil
 }
 
-func (km *KVStoreMesh) newRemoteCluster(name string, _ common.StatusFunc) common.RemoteCluster {
+func (km *KVStoreMesh) newRemoteCluster(name string, _ common.StatusFunc, _ common.Synced) common.RemoteCluster {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	rc := &remoteCluster{

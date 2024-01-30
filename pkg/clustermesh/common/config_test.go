@@ -120,7 +120,7 @@ func (s *ClusterMeshTestSuite) TestWatchConfigDirectory(c *C) {
 	gcm := NewClusterMesh(Configuration{
 		Config:           Config{ClusterMeshConfig: baseDir},
 		ClusterInfo:      types.ClusterInfo{ID: 255, Name: "test2"},
-		NewRemoteCluster: func(string, StatusFunc) RemoteCluster { return &fakeRemoteCluster{} },
+		NewRemoteCluster: func(string, StatusFunc, Synced) RemoteCluster { return &fakeRemoteCluster{} },
 		Metrics:          MetricsProvider("clustermesh")(),
 	})
 	cm := &gcm

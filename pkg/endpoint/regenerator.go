@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/cilium/cilium/pkg/clustermesh"
+	cmcommon "github.com/cilium/cilium/pkg/clustermesh/common"
 	"github.com/cilium/cilium/pkg/hive/cell"
 	"github.com/cilium/cilium/pkg/logging/logfields"
 	"github.com/cilium/cilium/pkg/time"
@@ -30,7 +31,7 @@ var (
 type Regenerator struct {
 	RegeneratorConfig
 
-	cmWaitFn clustermesh.SyncedWaitFn
+	cmWaitFn cmcommon.SyncedWaitFn
 
 	logger        logrus.FieldLogger
 	cmSyncLogOnce sync.Once

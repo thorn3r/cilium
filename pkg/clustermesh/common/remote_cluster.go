@@ -101,6 +101,8 @@ type remoteCluster struct {
 	metricLastFailureTimestamp prometheus.Gauge
 	metricReadinessStatus      prometheus.Gauge
 	metricTotalFailures        prometheus.Gauge
+
+	synced Synced
 }
 
 var (

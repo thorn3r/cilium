@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/cilium/cilium/pkg/clustermesh/common"
 	"github.com/cilium/cilium/pkg/clustermesh/types"
 	"github.com/cilium/cilium/pkg/clustermesh/utils"
 	"github.com/cilium/cilium/pkg/kvstore"
@@ -198,7 +199,7 @@ func TestRemoteClusterRun(t *testing.T) {
 			}
 			st := store.NewFactory(store.MetricsProvider())
 			km := KVStoreMesh{backend: kvstore.Client(), storeFactory: st}
-			rc := km.newRemoteCluster("foo", nil)
+			rc := km.newRemoteCluster("foo", nil, common.Synced{})
 			ready := make(chan error)
 
 			wg.Add(1)
