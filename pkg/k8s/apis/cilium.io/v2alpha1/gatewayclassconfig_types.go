@@ -121,6 +121,21 @@ type ServiceConfig struct {
 	TrafficDistribution *string `json:"trafficDistribution,omitempty"`
 }
 
+type GRPCWebTranslationConfig struct {
+	// Enabled controls Envoy's gRPC-web to gRPC request translation.
+	//
+	// +kubebuilder:validation:Optional
+	// +kubebuilder:default=true
+	Enabled bool `json:"enabled"`
+}
+
+type HTTPOptions struct {
+	// GRPCWebTranslation controls Envoy's gRPC-web to gRPC request translation.
+	//
+	// +kubebuilder:validation:Optional
+	GRPCWebTranslation *GRPCWebTranslationConfig `json:"grpcWebTranslation,omitempty"`
+}
+
 // CiliumGatewayClassConfigSpec specifies all the configuration options for a
 // Cilium managed GatewayClass.
 type CiliumGatewayClassConfigSpec struct {
@@ -135,6 +150,11 @@ type CiliumGatewayClassConfigSpec struct {
 	//
 	// +kubebuilder:validation:Optional
 	Service *ServiceConfig `json:"service,omitempty"`
+
+	// HTTPOptions specifies HTTP connection manager options.
+	//
+	// +kubebuilder:validation:Optional
+	HTTPOptions *HTTPOptions `json:"httpOptions,omitempty"`
 }
 
 // +deepequal-gen=false
