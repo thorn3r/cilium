@@ -1894,6 +1894,7 @@ var gatewayCheckFuncs = []routechecks.CheckWithParentFunc{
 }
 
 var backendCheckFuncs = []routechecks.CheckWithParentFunc{
+	routechecks.CheckSessionPersistence,
 	routechecks.CheckAgainstCrossNamespaceBackendReferences,
 	routechecks.CheckBackend,
 	routechecks.CheckHasServiceImportSupport,
