@@ -18,6 +18,7 @@ import (
 	gatewayv1 "sigs.k8s.io/gateway-api/apis/v1"
 	mcsapiv1beta1 "sigs.k8s.io/mcs-api/pkg/apis/v1beta1"
 
+	"github.com/cilium/cilium/operator/pkg/gateway-api/helpers"
 	"github.com/cilium/cilium/operator/pkg/model"
 	"github.com/cilium/cilium/pkg/k8s/apis/cilium.io/v2alpha1"
 )
@@ -1707,4 +1708,70 @@ func readGatewayInput(t *testing.T, testName string) Input {
 	input.BackendTLSPolicyMap = btlspMap
 
 	return input
+}
+
+func TestToHTTPSessionPersistence(t *testing.T) {
+	wantPersistence := func(name, path string) *model.HTTPSessionPersistence {
+		return &model.HTTPSessionPersistence{
+			Cookie: &model.HTTPCookieSessionPersistence{
+				Name:     name,
+				Path:     path,
+				Secure:   true,
+				HTTPOnly: true,
+				SameSite: "Strict",
+			},
+		}
+	}
+
+	ns := "default"
+	name := "route"
+	index := 0
+	generatedName := defaultSessionName(helpers.HTTPRouteKind, ns, name, index)
+
+	tests := []struct {
+		name  string
+		input *gatewayv1.SessionPersistence
+		path  model.StringMatch
+		want  *model.HTTPSessionPersistence
+	}{
+		{
+			name:  "no persistence",
+			input: nil,
+			want:  nil,
+		},
+		{
+			name: "explicit name and exact path",
+			input: &gatewayv1.SessionPersistence{
+				SessionName: ptr.To("custom-session"),
+			},
+			path: model.StringMatch{Exact: "/exact"},
+			want: wantPersistence("custom-session", "/exact"),
+		},
+		{
+			name:  "generated name and prefix path",
+			input: &gatewayv1.SessionPersistence{},
+			path:  model.StringMatch{Prefix: "/prefix"},
+			want:  wantPersistence(generatedName, "/prefix"),
+		},
+		{
+			name:  "regex path falls back to root",
+			input: &gatewayv1.SessionPersistence{},
+			path:  model.StringMatch{Regex: "/items/[0-9]+"},
+			want:  wantPersistence(generatedName, "/"),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := toHTTPSessionPersistence(
+				tt.input,
+				helpers.HTTPRouteKind,
+				ns,
+				name,
+				index,
+				tt.path,
+			)
+			assert.Equal(t, tt.want, got)
+		})
+	}
 }
